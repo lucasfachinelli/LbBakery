@@ -35,7 +35,16 @@ export default async function handler(req, res) {
       },
       auto_return: 'approved',
       notification_url: `${backendBase}/api/webhook`,
-      external_reference: external_reference || `lb-${Date.now()}`
+      external_reference: external_reference || `lb-${Date.now()}`,
+      // 👉 habilitá todos los medios (tarjeta, dinero en cuenta, transferencia/QR)
+      payment_methods: {
+        excluded_payment_types: [],
+        excluded_payment_methods: [],
+        // Opcional: si NO querés cuotas, descomentá:
+        // installments: 1,
+        // Opcional: sugerir transferencia:
+        // default_payment_method_id: "bank_transfer"
+      }
     };
 
     const r = await fetch('https://api.mercadopago.com/checkout/preferences', {
