@@ -1,7 +1,7 @@
 export default async function handler(req, res) {
   try {
     const url = new URL(req.url, `https://${req.headers['x-forwarded-host'] || req.headers.host}`);
-    const b64 = url.searchParams.get('items'); // JSON de items en base64
+    const b64 = url.searchParams.get('items'); // JSON en base64
     if (!b64) return res.status(400).send('Faltan items');
 
     const json = Buffer.from(b64, 'base64').toString('utf8');
@@ -30,7 +30,13 @@ export default async function handler(req, res) {
       },
       auto_return: 'approved',
       notification_url: `${backendBase}/api/webhook`,
-      external_reference: `lb-${Date.now()}`
+      external_reference: `lb-${Date.now()}`,
+      payment_methods: {
+        excluded_payment_types: [],
+        excluded_payment_methods: [],
+        // installments: 1,
+        // default_payment_method_id: "bank_transfer"
+      }
     };
 
     const r = await fetch('https://api.mercadopago.com/checkout/preferences', {
